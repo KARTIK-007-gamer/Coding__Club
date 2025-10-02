@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Coding Club</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <style>
+        body {
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 70px; /* Height of footer */
+        }
+        footer {
+            background: #2d3e50;
+            color: #fff;
+            text-align: center;
+            padding: 1em 0;
+            margin-top: 2em;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            z-index: 100;
+        }
+        
+        .dashboard {
+            padding: 2rem;
+        }
+
+        .dashboard h1 {
+            margin-bottom: 2rem;
+            color: #2d3e50;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .progress-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#1abc9c 270deg, #ecf0f1 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem auto;
+            position: relative;
+        }
+
+        .progress-circle::before {
+            content: '';
+            width: 90px;
+            height: 90px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .progress-circle span {
+            position: relative;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2d3e50;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+
+        .progress {
+            height: 100%;
+            background: #1abc9c;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .score-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2d3e50;
+            margin: 1rem 0;
+        }
+
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .content-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .content-section h2 {
+            color: #2d3e50;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .task-item, .test-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-status {
+            font-weight: 500;
+        }
+
+        .completed .task-status {
+            color: #1abc9c;
+        }
+
+        .in-progress .task-status {
+            color: #f1c40f;
+        }
+
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .test-score {
+            font-weight: bold;
+            color: #1abc9c;
+        }
+
+        .test-details {
+            background: #fff;
+            padding: 0.5rem;
+            border-radius: 5px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.25rem 0;
+            color: #7f8c8d;
+        }
+
+        .stats-detail {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        /* Test Page Styles */
+        .next-test-banner {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            box-shadow: 0 4px 15px rgba(26, 188, 156, 0.2);
+        }
+
+        .countdown-container {
+            text-align: center;
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.1);
+        }
+
+        .countdown-container h3 {
+            color: #1565c0;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .modern-countdown.horizontal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.15);
+        }
+
+        .countdown-divider {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 0 0.5rem;
+            padding-top: 1rem;
+        }
+
+        .countdown-divider .dot {
+            width: 6px;
+            height: 6px;
+            background: #2196f3;
+            border-radius: 50%;
+            animation: pulseOpacity 1s infinite;
+        }
+
+        @keyframes pulseOpacity {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .countdown-divider .dot:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .countdown-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            min-width: 140px;
+        }
+
+        .time-box {
+            background: #2196f3;
+            padding: 1.5rem;
+            border-radius: 12px;
+            width: 100%;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.2);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .time-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.15) 0%,
+                rgba(255, 255, 255, 0) 100%);
+        }
+
+        .time-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(33, 150, 243, 0.3);
+        }
+
+        .time-box::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .time-box span {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .countdown-unit label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1565c0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .countdown-unit label::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: #2196f3;
+            border-radius: 2px;
+        }
+
+        /* Animation for seconds */
+        .countdown-unit:last-child .time-box {
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 8px 20px rgba(33, 150, 243, 0.2);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 12px 25px rgba(33, 150, 243, 0.3);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .countdown-container {
+                padding: 1.5rem;
+            }
+
+            .modern-countdown.horizontal {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .countdown-unit {
+                min-width: 120px;
+            }
+
+            .time-box {
+                height: 80px;
+                padding: 1rem;
+            }
+
+            .time-box span {
+                font-size: 2.5rem;
+            }
+
+            .countdown-divider {
+                display: none;
+            }
+        }
+
+        /* Add a pulsing animation to the seconds */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        #seconds {
+            animation: pulse 1s infinite;
+        }
+
+        .clock-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        .clock-hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .clock-hand.hours {
+            width: 4px;
+            height: 60px;
+            margin-left: -2px;
+        }
+
+        .clock-hand.minutes {
+            width: 3px;
+            height: 80px;
+            margin-left: -1.5px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .clock-hand.seconds {
+            width: 2px;
+            height: 90px;
+            margin-left: -1px;
+            background: #1abc9c;
+        }
+
+        .clock-numbers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .clock-numbers .number {
+            position: absolute;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .clock-numbers .n12 { top: 10px; left: 50%; transform: translateX(-50%); }
+        .clock-numbers .n3 { right: 10px; top: 50%; transform: translateY(-50%); }
+        .clock-numbers .n6 { bottom: 10px; left: 50%; transform: translateX(-50%); }
+        .clock-numbers .n9 { left: 10px; top: 50%; transform: translateY(-50%); }
+
+        .digital-time {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .digital-time span {
+            display: inline-block;
+            margin: 0 0.2rem;
+            min-width: 2.5ch;
+            text-align: center;
+        }
+
+        .test-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            background: none;
+            color: #7f8c8d;
+            font-size: 1rem;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #1abc9c;
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #2d3e50;
+        }
+
+        .tab-btn.active::after {
+            transform: scaleX(1);
+        }
+
+        .test-content {
+            display: none;
+        }
+
+        .test-content.active {
+            display: block;
+        }
+
+        .test-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .test-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #eee;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .next-test-info {
+            padding-left: 1rem;
+            border-left: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .next-test-info h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.5rem;
+        }
+
+        .next-test-info p {
+            margin: 0.5rem 0;
+            opacity: 0.9;
+        }
+
+        .test-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .test-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .test-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .test-card .test-date {
+            color: #1abc9c;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .test-card .test-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #2d3e50;
+        }
+
+        .test-card .test-topics {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .test-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        .status-upcoming {
+            background: #e8f7f4;
+            color: #1abc9c;
+        }
+
+        .status-completed {
+            background: #f0f4f8;
+            color: #7f8c8d;
+        }
+
+        .leaderboard-filters {
+            margin-bottom: 1rem;
+        }
+
+        .leaderboard-filters select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        #leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        #leaderboard-table th,
+        #leaderboard-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        #leaderboard-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2d3e50;
+        }
+
+        #leaderboard-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .performance-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .performance-excellent {
+            background: #1abc9c;
+        }
+
+        .performance-good {
+            background: #3498db;
+        }
+
+        .performance-average {
+            background: #f1c40f;
+        }
+    </style>
+    <header>
+        <nav>
+            <ul id="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="lectures.html">Online Lectures</a></li>
+                <li><a href="notes.html">Notes</a></li>
+                <li><a href="tasks.html">Daily Tasks</a></li>
+                <li><a href="tests.html">Weekly Tests</a></li>
+                <li><a href="dashboard.html" class="active">Student Dashboard</a></li>
+                <li>
+                    <select id="user-action-select" style="width:32px;height:32px;padding:0;border-radius:50%;border:1px solid #111;cursor:pointer;background:#fff;color:#111;text-indent:-9999px;">
+                        <option value="" style="color:#fff;background:#fff;">&#9660;</option>
+                        <option value="login" style="color:#fff;background:#111;">Login</option>
+                        <option value="logout" style="color:#fff;background:#111;">Logout</option>
+                    </select>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="dashboard">
+            <div class="user-profile">
+                <div class="user-profile-header">
+                    <div class="user-avatar" id="user-avatar"></div>
+                    <div class="user-info">
+                        <h2 id="user-name">Loading...</h2>
+                        <span id="user-email">Loading...</span>
+                    </div>
+                </div>
+                <div class="user-details">
+                    <div class="user-detail-item">
+                        <label>College</label>
+                        <span id="user-college">Loading...</span>
+                    </div>
+                    <div class="user-detail-item">
+                        <label>Year of Study</label>
+                        <span id="user-year">Loading...</span>
+                    </div>
+                    <div class="user-detail-item">
+                        <label>Member Since</label>
+                        <span id="user-joined">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <h1>Student Dashboard</h1>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>Overall Progress</h3>
+                    <div class="progress-circle">
+                        <span id="overall-progress">75%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h3>Tasks Completed</h3>
+                    <div class="progress-bar">
+                        <div class="progress" id="tasks-progress" style="width: 80%;"></div>
+                    </div>
+                    <span class="stats-detail">16/20 Tasks</span>
+                </div>
+                <div class="stat-card">
+                    <h3>Average Test Score</h3>
+                    <div class="score-display">
+                        <span id="avg-score">85</span>/100
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <div class="content-section">
+                    <h2>Recent Tasks</h2>
+                    <div class="task-list" id="recent-tasks">
+                        <div class="task-item completed">
+                            <span class="task-name">Hello World Program</span>
+                            <span class="task-status">Completed</span>
+                        </div>
+                        <div class="task-item completed">
+                            <span class="task-name">Sum of Numbers</span>
+                            <span class="task-status">Completed</span>
+                        </div>
+                        <div class="task-item in-progress">
+                            <span class="task-name">Find Maximum</span>
+                            <span class="task-status">In Progress</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <h2>Test Results</h2>
+                    <div class="test-results" id="test-results">
+                        <div class="test-item">
+                            <div class="test-header">
+                                <span class="test-name">Week 1 Test</span>
+                                <span class="test-score">90/100</span>
+                            </div>
+                            <div class="test-details">
+                                <div class="detail-item">
+                                    <span>C Programming Basics</span>
+                                    <span>45/50</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Algorithm Logic</span>
+                                    <span>45/50</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-header">
+                                <span class="test-name">Week 2 Test</span>
+                                <span class="test-score">85/100</span>
+                            </div>
+                            <div class="test-details">
+                                <div class="detail-item">
+                                    <span>Functions & Arrays</span>
+                                    <span>40/50</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Problem Solving</span>
+                                    <span>45/50</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+        </div>
+        <p>&copy; 2025 Coding Club. All rights reserved.</p>
+    </footer>
+    <script src="assets/script.js"></script>
+</body>
+</html>

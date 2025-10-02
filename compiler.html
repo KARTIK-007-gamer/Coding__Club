@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C Compiler - Coding Club</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul id="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="lectures.html">Online Lectures</a></li>
+                <li><a href="notes.html">Notes</a></li>
+                <li><a href="tasks.html">Daily Tasks</a></li>
+                <li><a href="tests.html">Weekly Tests</a></li>
+                <li><a href="compiler.html" class="active">C Compiler</a></li>
+                <li><a href="dashboard.html">Student Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="compiler-container">
+        <div class="task-panel">
+            <div class="task-header">
+                <h2>Task Description</h2>
+                <select id="taskSelector" onchange="loadTask()">
+                    <option value="">Select a task...</option>
+                    <option value="1">Task 1: Hello World</option>
+                    <option value="2">Task 2: Sum of Numbers</option>
+                    <option value="3">Task 3: Find Maximum</option>
+                </select>
+            </div>
+            <div id="taskDescription" class="task-content">
+                <p>Select a task to begin coding...</p>
+            </div>
+            <div class="expected-output">
+                <h3>Expected Output:</h3>
+                <pre id="expectedOutput"></pre>
+            </div>
+        </div>
+        <div class="editor-panel">
+            <div class="editor-header">
+                <h2>Code Editor</h2>
+                <button onclick="runCode()" class="run-btn">Run Code</button>
+            </div>
+            <textarea id="codeEditor"></textarea>
+            <div class="output-section">
+                <h3>Output:</h3>
+                <pre id="outputArea"></pre>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+        </div>
+        <p>&copy; 2025 Coding Club. All rights reserved.</p>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="assets/compiler.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Coding Club</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul id="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="lectures.html">Online Lectures</a></li>
+                <li><a href="notes.html">Notes</a></li>
+                <li><a href="tasks.html">Daily Tasks</a></li>
+                <li><a href="tests.html">Weekly Tests</a></li>
+                <li><a href="dashboard.html">Student Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="login center-items">
+            <h2>Login to Coding Club</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <input type="text" name="fullName" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Email Address" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="college" placeholder="College Name" required>
+                </div>
+                <div class="form-group">
+                    <select name="year" required>
+                        <option value="">Select Year of Study</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="username" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="Password" required>
+                    <small class="password-hint">Password must contain at least one capital letter, one number, and one special character</small>
+                </div>
+                <button type="submit" class="submit-btn">Create Account</button>
+            </form>
+            <div style="margin: 1.5em 0; text-align: center;">
+                <span>or</span>
+            </div>
+            <div style="display: flex; justify-content: center;">
+                <button id="google-signup" style="background: #fff; color: #444; border: 1px solid #ddd; padding: 0.7em 2em; border-radius: 4px; font-size: 1em; box-shadow: 0 2px 4px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 0.5em; cursor: pointer;">
+                    <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" style="width:24px; height:24px;"> Sign up with Google
+                </button>
+            </div>
+            <div id="login-success" style="display:none; color:green; margin-top:1em;">Login successful! Redirecting...</div>
+            <div id="login-error" style="display:none; color:red; margin-top:1em;">Invalid username or password.</div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+        </div>
+        <p>&copy; 2025 Coding Club. All rights reserved.</p>
+    </footer>
+    <script src="assets/script.js"></script>
+</body>
+</html>

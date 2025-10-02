@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Tests - Coding Club</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul id="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="lectures.html">Online Lectures</a></li>
+                <li><a href="notes.html">Notes</a></li>
+                <li><a href="tasks.html">Daily Tasks</a></li>
+                <li><a href="tests.html" class="active">Weekly Tests</a></li>
+                <!-- <li><a href="dashboard.html">Student Dashboard</a></li> -->
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="tests">
+            <h1>Weekly Tests</h1>
+            
+            <div class="next-test-banner">
+                <div class="countdown-container">
+                    <h3>Next Test Starts In:</h3>
+                    <div class="modern-countdown horizontal" id="test-countdown">
+                        <div class="countdown-unit">
+                            <div class="time-box">
+                                <span id="days">00</span>
+                            </div>
+                            <label>Days</label>
+                        </div>
+                        <div class="countdown-divider">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                        <div class="countdown-unit">
+                            <div class="time-box">
+                                <span id="hours">00</span>
+                            </div>
+                            <label>Hours</label>
+                        </div>
+                        <div class="countdown-divider">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                        <div class="countdown-unit">
+                            <div class="time-box">
+                                <span id="minutes">00</span>
+                            </div>
+                            <label>Minutes</label>
+                        </div>
+                        <div class="countdown-divider">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                        <div class="countdown-unit">
+                            <div class="time-box">
+                                <span id="seconds">00</span>
+                            </div>
+                            <label>Seconds</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="next-test-info">
+                    <h3 id="next-test-title">Loading...</h3>
+                    <p id="next-test-date">Loading...</p>
+                    <p id="next-test-topics">Loading...</p>
+                </div>
+            </div>
+
+            <div class="test-schedule">
+                <div class="test-tabs">
+                    <button class="tab-btn active" data-tab="upcoming">Upcoming Tests</button>
+                    <button class="tab-btn" data-tab="past">Past Tests</button>
+                </div>
+                <div class="test-content active" id="upcoming-tests">
+                    <div class="test-timeline" id="test-schedule-list">
+                        <!-- Test schedule populated by JS -->
+                    </div>
+                </div>
+                <div class="test-content" id="past-tests">
+                    <div class="test-grid" id="past-tests-list">
+                        <!-- Past tests populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="leaderboard">
+                <h2>Top Performers</h2>
+                <div class="leaderboard-filters">
+                    <select id="test-select">
+                        <option value="all">All Tests</option>
+                        <!-- Test options populated by JS -->
+                    </select>
+                </div>
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Student Name</th>
+                            <th>Score</th>
+                            <th>Performance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Leaderboard populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+        </div>
+        <p>&copy; 2025 Coding Club. All rights reserved.</p>
+    </footer>
+    <script src="assets/script.js"></script>
+</body>
+</html>
