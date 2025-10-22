@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>C++ OOP Test — 30 Questions</title>
+  <style>
+    :root{--accent:#2563eb;--danger:#dc2626;--bg:#f8fafc;--card:#ffffff}
+    *{box-sizing:border-box}
+    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0; background:var(--bg); color:#0f172a}
+    header{display:flex;align-items:center;justify-content:space-between;padding:1rem;gap:1rem}
+    .brand{display:flex;align-items:center;gap:.6rem}
+    .brand h1{font-size:1.05rem;margin:0}
+    .timer{font-weight:700;padding:.5rem .75rem;border-radius:8px;background:rgba(37,99,235,0.08)}
+    .warning{background:rgba(220,38,38,0.08)}
+    main{max-width:980px;margin:0 auto;padding:1rem}
+    .controls{display:flex;gap:.5rem;align-items:center}
+    .progressbar{height:10px;background:#e6eefc;border-radius:999px;overflow:hidden;width:220px}
+    .progressbar > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent), #60a5fa)}
+    .question-card{background:var(--card);padding:1rem;border-radius:12px;box-shadow:0 6px 18px rgba(11,15,30,0.06);margin-bottom:1rem}
+    fieldset{border:0;padding:0;margin:0}
+    legend{font-weight:600;margin-bottom:.5rem}
+    .options{display:flex;flex-direction:column;gap:.5rem}
+    label.option{display:flex;align-items:center;gap:.6rem;padding:.5rem;border-radius:8px;border:1px solid transparent}
+    input[type=radio]{margin-right:.5rem}
+    label.option:hover{background:#f1f5f9}
+    .fixed-submit{position:fixed;right:16px;bottom:16px;display:flex;gap:.5rem;align-items:center}
+    button{background:var(--accent);color:white;border:0;padding:.6rem .9rem;border-radius:10px;font-weight:700;cursor:pointer}
+    button.secondary{background:transparent;color:var(--accent);border:2px solid rgba(37,99,235,0.12)}
+    .results{padding:1rem;background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(11,15,30,0.06);margin-top:1rem}
+    .small{font-size:.9rem;color:#475569}
+    .muted{color:#6b7280}
+    .correct{color:green;font-weight:700}
+    .incorrect{color:var(--danger);font-weight:700}
+
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center;padding:1rem}
+    .modal{background:#fff;border-radius:12px;padding:1.25rem;max-width:420px;width:100%;box-shadow:0 10px 30px rgba(2,6,23,0.4);text-align:center}
+    .modal h3{margin:0 0 .5rem 0}
+    .modal .small{margin-bottom:1rem}
+    .modal .actions{display:flex;gap:.5rem;justify-content:center}
+    .btn-ghost{background:transparent;color:var(--accent);border:2px solid rgba(37,99,235,0.12)}
+
+    @media (max-width:640px){.controls{flex-direction:column;align-items:flex-start}.progressbar{width:100%}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden><rect width="24" height="24" rx="6" fill="#eef2ff"/><path d="M7 14.5L11 9l4 5.5" stroke="#3730a3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div>
+        <h1>C++ OOP Test</h1>
+        <div class="muted small">30 Qs — 30 minutes — 1 mark each</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="progressbar" title="progress"><i id="progressFill"></i></div>
+      <div id="progressText" class="small">Question 0 of 30</div>
+      <div id="timer" class="timer" role="timer" aria-live="polite">30:00</div>
+    </div>
+  </header>
+
+  <main>
+    <form id="testForm" aria-label="C++ OOP Test">
+      <div id="questionsContainer"></div>
+    </form>
+
+    <div id="postArea"></div>
+  </main>
+
+  <div class="fixed-submit">
+    <button id="resetBtn" class="secondary">Reset Test</button>
+    <button id="scoreBtn" title="Check Score">Check Score</button>
+  </div>
+
+  <!-- Modal shown after scoring -->
+  <div id="scoreModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h3 id="modalTitle">Your Score</h3>
+      <div id="modalBody" class="small muted">Calculating...</div>
+      <div class="actions" style="margin-top:12px">
+        <button id="goHomeBtn" class="btn-ghost">Go to Home</button>
+        <button id="viewDetailsBtn">View Details</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    'use strict';
+
+    const STORAGE_KEY = 'cpp_oop_test_v1';
+    const DURATION_SECONDS = 30 * 60; // 30 minutes
+
+    // === QUESTIONS: 30 C++ OOP questions ===
+    const QUESTIONS = [
+      {id:1, topic:'C++ OOP', text:'Which C++ feature allows bundling data and functions that operate on that data into a single unit?', options:['Inheritance','Polymorphism','Encapsulation','Templates'], correctIndex:2, explanation:'Encapsulation groups data and methods inside classes/objects.'},
+      {id:2, topic:'C++ OOP', text:'What is the correct way to declare a class named Person?', options:['class Person {}','Person class {}','class Person();','struct Person();'], correctIndex:0, explanation:'class Person { /*...*/ }; declares a class.'},
+      {id:3, topic:'C++ OOP', text:'What is a constructor?', options:['A function that returns object','A special member function that initializes objects','A destructor alias','A global function'], correctIndex:1, explanation:'Constructors initialize object state when created.'},
+      {id:4, topic:'C++ OOP', text:'Which of the following is a copy constructor signature for class A?', options:['A(A &a)','A(const A &a)','A(A a)','A::A()'], correctIndex:1, explanation:'Copy constructor usually takes const A&.'},
+      {id:5, topic:'C++ OOP', text:'What does the keyword "virtual" do for a function in a base class?', options:['Makes function inline','Allows dynamic dispatch (runtime override)','Makes function static','Prevents overriding'], correctIndex:1, explanation:'virtual enables polymorphic behavior for overridden functions.'},
+      {id:6, topic:'C++ OOP', text:'Which destructor declaration is correct for class Foo?', options:['~Foo();','destruct Foo();','void ~Foo();','@Foo();'], correctIndex:0, explanation:'~Foo() is the destructor syntax.'},
+      {id:7, topic:'C++ OOP', text:'When should a destructor be declared virtual?', options:['Always','If the class is intended to be inherited from and deleted via base pointer','Never','Only for abstract classes'], correctIndex:1, explanation:'Virtual destructor ensures derived destructor runs when deleting through base pointer.'},
+      {id:8, topic:'C++ OOP', text:'What is polymorphism?', options:['Multiple constructors for a class','Objects having multiple forms via virtual functions','Data hiding only','Template specialization'], correctIndex:1, explanation:'Polymorphism allows code to operate on objects of different types via a common interface.'},
+      {id:9, topic:'C++ OOP', text:'Which keyword makes a member accessible only within its class and friends?', options:['public','protected','private','internal'], correctIndex:2, explanation:'private restricts access to the class and friend functions/classes.'},
+      {id:10, topic:'C++ OOP', text:'What does "protected" access allow?', options:['Accessible from anywhere','Accessible in derived classes and the class itself','Accessible only in same file','Not accessible at all'], correctIndex:1, explanation:'protected allows access in the class and derived classes.'},
+      {id:11, topic:'C++ OOP', text:'Which term describes a class that has at least one pure virtual function?', options:['Concrete class','Template class','Abstract class','Static class'], correctIndex:2, explanation:'Abstract classes contain pure virtual functions and cannot be instantiated.'},
+      {id:12, topic:'C++ OOP', text:'How is a pure virtual function declared?', options:['virtual void f() = 0;','virtual void f();','void f() = 0;','abstract void f();'], correctIndex:0, explanation:'Adding = 0 makes the virtual function pure.'},
+      {id:13, topic:'C++ OOP', text:'What is operator overloading?', options:['Changing operator precedence','Defining custom behavior for operators on user types','Replacing operators with functions globally','Disallowing use of operators'], correctIndex:1, explanation:'Operator overloading defines operator behavior for user types.'},
+      {id:14, topic:'C++ OOP', text:'Which of the following is the correct way to overload operator+ as a member in class C?', options:['C operator+(const C& rhs) const;','operator+(C, C);','friend C operator+(C,C);','C operator+(C rhs);'], correctIndex:0, explanation:'Member operator+ typically takes const C& and is const.'},
+      {id:15, topic:'C++ OOP', text:'What is the Rule of Three (or Five) about?', options:['Naming conventions','When to use templates','If a class defines destructor, copy constructor, or copy assignment, it likely needs all three','Memory alignment'], correctIndex:2, explanation:'Classes managing resources should define copy constructor, copy assignment, destructor (and often move operations in C++11+).' },
+      {id:16, topic:'C++ OOP', text:'What does "RAII" stand for and mean?', options:['Resource Acquisition Is Initialization — manage resources via object lifetime','Random Access Inheritance Interface','Run-time Application Initialization','Reference and Instance Injection'], correctIndex:0, explanation:'RAII ties resource management to object lifetime (constructor acquires, destructor releases).' },
+      {id:17, topic:'C++ OOP', text:'Which smart pointer takes unique ownership of an object?', options:['shared_ptr','unique_ptr','weak_ptr','auto_ptr'], correctIndex:1, explanation:'std::unique_ptr models exclusive ownership (C++11).' },
+      {id:18, topic:'C++ OOP', text:'Which smart pointer does NOT increase reference count and can detect expired objects?', options:['shared_ptr','unique_ptr','weak_ptr','raw pointer'], correctIndex:2, explanation:'weak_ptr observes shared_ptr without affecting reference count.'},
+      {id:19, topic:'C++ OOP', text:'What is dynamic_cast used for?', options:['Convert numeric types','Perform checked downcast of polymorphic types at runtime','Allocate dynamic memory','Cast away constness'], correctIndex:1, explanation:'dynamic_cast performs runtime-checked casts in polymorphic hierarchies.'},
+      {id:20, topic:'C++ OOP', text:'Which cast should you prefer for a simple reinterpretation of pointer types (least safe)?', options:['static_cast','dynamic_cast','reinterpret_cast','const_cast'], correctIndex:2, explanation:'reinterpret_cast reinterprets bit pattern; it is unsafe and non-portable.'},
+      {id:21, topic:'C++ OOP', text:'Which is true about multiple inheritance in C++?', options:['Forbidden by language','Allowed; may introduce diamond problem','Only interfaces can be multiply inherited','Allowed but only at runtime'], correctIndex:1, explanation:'C++ permits multiple inheritance; the diamond problem can arise without virtual inheritance.'},
+      {id:22, topic:'C++ OOP', text:'What solves the diamond problem when using multiple inheritance?', options:['Templates','Virtual inheritance','Friend classes','Operator overloading'], correctIndex:1, explanation:'Virtual inheritance prevents duplicate base subobjects in diamond-shaped multiple inheritance.'},
+      {id:23, topic:'C++ OOP', text:'Which keyword prevents a class from being derived from in C++11?', options:['sealed','final','override','private'], correctIndex:1, explanation:'final after class name prevents further inheritance (C++11 and later).' },
+      {id:24, topic:'C++ OOP', text:'What does the override specifier do when used on a member function?', options:['Force function to be virtual','Indicate function intentionally overrides base virtual function and cause compile error if it does not','Make function inline','Disable overriding'], correctIndex:1, explanation:'override helps catch mismatched signatures when overriding virtual functions.'},
+      {id:25, topic:'C++ OOP', text:'Which of these best describes composition?', options:['"Has-a" relationship, object contains another object','"Is-a" relationship, inheritance','Making class abstract','Operator overloading technique'], correctIndex:0, explanation:'Composition models "has-a": a class contains objects of other classes.'},
+      {id:26, topic:'C++ OOP', text:'Which of the following is a correct way to declare a template class?', options:['template<typename T> class Box { };','class template<T> Box { };','template Box<T> class {};','template<class T> Box;'], correctIndex:0, explanation:'template<typename T> class Box { ... }; is correct syntax.'},
+      {id:27, topic:'C++ OOP', text:'What is the effect of declaring a function noexcept?', options:['Function cannot be called','Indicates the function will not throw exceptions; can enable optimizations','Function will always throw','Function becomes inline'], correctIndex:1, explanation:'noexcept promises the function won’t throw, affecting overload resolution and optimizations.'},
+      {id:28, topic:'C++ OOP', text:'Which is the typical reason to declare member functions const?', options:['To make them static','To indicate they do not modify object state and can be called on const objects','To prevent overriding','To speed up execution'], correctIndex:1, explanation:'const member functions promise not to modify *this and are callable on const instances.'},
+      {id:29, topic:'C++ OOP', text:'Which mechanism allows runtime type information (RTTI) in C++?', options:['typeid and dynamic_cast','templates','inline functions','constexpr'], correctIndex:0, explanation:'typeid and dynamic_cast (with polymorphic types) provide RTTI.'},
+      {id:30, topic:'C++ OOP', text:'Which practice helps avoid slicing when passing polymorphic objects?', options:['Pass objects by value','Pass base class by value','Pass by pointer or reference','Use memcpy'], correctIndex:2, explanation:'Passing pointers/references preserves dynamic type; passing by value slices to base subobject.'}
+    ];
+
+    // Utilities
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i = a.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // Elements
+    const container = document.getElementById('questionsContainer');
+    const progressText = document.getElementById('progressText');
+    const progressFill = document.getElementById('progressFill');
+    const timerEl = document.getElementById('timer');
+    const scoreBtn = document.getElementById('scoreBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const postArea = document.getElementById('postArea');
+    const scoreModal = document.getElementById('scoreModal');
+    const modalBody = document.getElementById('modalBody');
+    const goHomeBtn = document.getElementById('goHomeBtn');
+    const viewDetailsBtn = document.getElementById('viewDetailsBtn');
+
+    let shuffledOptionsMap = {}; // questionId -> array of {text,isCorrect}
+    let remainingSeconds = DURATION_SECONDS;
+    let timerInterval = null;
+    let autosaveInterval = null;
+    let submitted = false;
+
+    // Render helpers
+    function createOptionElements(q){
+      const qDef = QUESTIONS.find(x => x.id === q.id);
+      const baseOptions = qDef.options.map((t, idx) => ({ text: t, isCorrect: idx === qDef.correctIndex }));
+      const shuffled = shuffle(baseOptions);
+      shuffledOptionsMap[q.id] = shuffled;
+
+      const optDiv = document.createElement('div');
+      optDiv.className = 'options';
+
+      shuffled.forEach((opt, i) => {
+        const inputId = `q${q.id}_opt${i}`;
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = `q_${q.id}`;
+        input.id = inputId;
+        input.value = opt.text; // store displayed text for robust restore
+        input.setAttribute('aria-label', opt.text);
+
+        const label = document.createElement('label');
+        label.className = 'option';
+        label.htmlFor = inputId;
+        label.tabIndex = 0;
+
+        const span = document.createElement('span');
+        span.textContent = opt.text;
+
+        label.appendChild(input);
+        label.appendChild(span);
+        optDiv.appendChild(label);
+      });
+
+      return optDiv;
+    }
+
+    function renderAll(){
+      container.innerHTML = '';
+      QUESTIONS.forEach((q, idx) => {
+        const card = document.createElement('section');
+        card.className = 'question-card';
+        card.id = `card_${q.id}`;
+
+        const field = document.createElement('fieldset');
+        const legend = document.createElement('legend');
+        legend.textContent = `${idx + 1}. (${q.topic}) ${q.text}`;
+        field.appendChild(legend);
+
+        field.appendChild(createOptionElements(q));
+        card.appendChild(field);
+        container.appendChild(card);
+      });
+
+      updateProgress();
+    }
+
+    function updateProgress(){
+      const total = QUESTIONS.length;
+      let answered = 0;
+      QUESTIONS.forEach(q => {
+        const sel = document.querySelector(`input[name="q_${q.id}"]:checked`);
+        if(sel) answered++;
+      });
+      progressText.textContent = `Answered ${answered} of ${total}`;
+      const pct = Math.round((answered / total) * 100);
+      progressFill.style.width = pct + '%';
+    }
+
+    function collectAnswers(){
+      const answers = {};
+      QUESTIONS.forEach(q => {
+        const sel = document.querySelector(`input[name="q_${q.id}"]:checked`);
+        if(sel) answers[q.id] = sel.value;
+      });
+      return answers;
+    }
+
+    function calculateScore(userAnswers){
+      let score = 0;
+      const perQ = [];
+      QUESTIONS.forEach(q => {
+        const shuffled = shuffledOptionsMap[q.id] || [];
+        const selectedText = userAnswers[q.id] !== undefined ? userAnswers[q.id] : null;
+        const selectedOpt = selectedText ? shuffled.find(o => o.text === selectedText) : null;
+        const correctOpt = shuffled.find(o => o.isCorrect);
+        const isCorrect = selectedOpt ? selectedOpt.isCorrect : false;
+        if(isCorrect) score++;
+        perQ.push({ id: q.id, question: q.text, topic: q.topic, selected: selectedOpt ? selectedOpt.text : null, correct: correctOpt ? correctOpt.text : null, explanation: q.explanation, isCorrect });
+      });
+      return { score, perQ };
+    }
+
+    function disableInputs(){
+      document.querySelectorAll('input[type="radio"]').forEach(i => i.disabled = true);
+    }
+
+    function escapeHtml(str){
+      if(!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+
+    function renderDetails(result){
+      postArea.innerHTML = '';
+      const box = document.createElement('div');
+      box.className = 'results';
+      const scorePct = Math.round((result.score / QUESTIONS.length) * 100);
+      box.innerHTML = `<h2>Your score: ${result.score} / ${QUESTIONS.length} — ${scorePct}%</h2><div class='small muted'>Time: ${formatTime(remainingSeconds)} remaining when submitted</div><hr>`;
+
+      result.perQ.forEach((q, i) => {
+        const qdiv = document.createElement('div');
+        qdiv.style.marginBottom = '0.8rem';
+        qdiv.innerHTML = `<strong>${i+1}. (${escapeHtml(q.topic)})</strong> <div class='small'>${escapeHtml(q.question)}</div>
+          <div class='small'>Your answer: <span class='${q.isCorrect? 'correct':'incorrect'}'>${escapeHtml(q.selected || '— (no answer)')}</span></div>
+          <div class='small'>Correct answer: <span class='correct'>${escapeHtml(q.correct || '—')}</span></div>
+          <div class='small muted'>Explanation: ${escapeHtml(q.explanation)}</div>`;
+        box.appendChild(qdiv);
+      });
+
+      postArea.appendChild(box);
+    }
+
+    // Persistence
+    function saveProgress(state){
+      try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){ /* ignore storage errors */ }
+    }
+    function loadProgress(){
+      try{ const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : null; } catch(e){ return null; }
+    }
+
+    // Timer + autosave
+    function formatTime(s){ const mm = String(Math.floor(s/60)).padStart(2,'0'); const ss = String(s%60).padStart(2,'0'); return `${mm}:${ss}`; }
+
+    function startTimer(){
+      clearInterval(timerInterval);
+      timerInterval = setInterval(()=>{
+        if(submitted) return clearInterval(timerInterval);
+        remainingSeconds--;
+        timerEl.textContent = formatTime(remainingSeconds);
+        if(remainingSeconds <= 120) timerEl.classList.add('warning');
+        if(remainingSeconds <= 0){
+          timerEl.textContent = '00:00';
+          autoSubmitOnExpire();
+        }
+      }, 1000);
+    }
+
+    function autoSubmitOnExpire(){
+      if(submitted) return;
+      submitted = true;
+      const answers = collectAnswers();
+      const result = calculateScore(answers);
+      disableInputs();
+      saveProgress({ submitted: true, remainingSeconds: 0, answers });
+      clearInterval(timerInterval);
+      clearInterval(autosaveInterval);
+      showScoreModal(result);
+    }
+
+    function startAutosave(){
+      autosaveInterval = setInterval(()=>{
+        if(submitted) return;
+        const answers = collectAnswers();
+        saveProgress({ submitted: false, remainingSeconds, answers });
+      }, 10000);
+    }
+
+    // Modal
+    function showScoreModal(result){
+      modalBody.textContent = `You scored ${result.score} out of ${QUESTIONS.length} (${Math.round(result.score / QUESTIONS.length * 100)}%).`;
+      scoreModal.style.display = 'flex';
+      // one-time handlers
+      goHomeBtn.onclick = () => {
+        // Preserve current answers and remaining time but mark not-submitted so the user can resume later
+        try {
+          const cur = loadProgress() || {};
+          cur.submitted = false;
+          cur.remainingSeconds = remainingSeconds;
+          cur.answers = collectAnswers();
+          saveProgress(cur);
+        } catch (e) {
+          // ignore storage errors
+        }
+        window.location.href = '../tests.html';
+      };
+      viewDetailsBtn.onclick = ()=>{ scoreModal.style.display = 'none'; renderDetails(result); };
+    }
+
+    // Score button
+    scoreBtn.addEventListener('click', ()=>{
+      if(submitted) return;
+      if(!confirm('Check your score now?')) return;
+      submitted = true;
+      const answers = collectAnswers();
+      const result = calculateScore(answers);
+      disableInputs();
+      saveProgress({ submitted: true, remainingSeconds, answers });
+      clearInterval(timerInterval);
+      clearInterval(autosaveInterval);
+      showScoreModal(result);
+    });
+
+    resetBtn.addEventListener('click', ()=>{
+      if(!confirm('Reset will clear saved progress and allow a fresh attempt. Proceed?')) return;
+      try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+      location.reload();
+    });
+
+    // Restore
+    function restoreIfAny(){
+      const state = loadProgress();
+      if(!state) return false;
+      renderAll();
+      if(state.answers){
+        Object.keys(state.answers).forEach(qidStr => {
+          const qid = parseInt(qidStr, 10);
+          const selectedText = state.answers[qid];
+          if(!selectedText) return;
+          const input = Array.from(document.querySelectorAll(`input[name=\"q_${qid}\"]`)).find(el => el.value === selectedText);
+          if(input) input.checked = true;
+        });
+      }
+      if(state.submitted){
+        remainingSeconds = state.remainingSeconds || 0;
+        submitted = true;
+        const answers = state.answers || {};
+        const result = calculateScore(answers);
+        disableInputs();
+        showScoreModal(result);
+        return true;
+      } else {
+        if(state.remainingSeconds) remainingSeconds = state.remainingSeconds;
+        return false;
+      }
+    }
+
+    document.addEventListener('change', (e)=>{ if(e.target && e.target.name && e.target.name.startsWith('q_')) updateProgress(); });
+
+    // keyboard activation for label elements
+    document.addEventListener('keydown', (e)=>{
+      if(document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('option')){
+        if(e.key === 'Enter' || e.key === ' '){
+          const input = document.getElementById(document.activeElement.htmlFor);
+          if(input && !input.disabled){ input.checked = true; updateProgress(); }
+          e.preventDefault();
+        }
+      }
+    });
+
+    // Boot
+    (function boot(){
+      const hadSubmitted = restoreIfAny();
+      if(!hadSubmitted){
+        if(container.children.length === 0) renderAll();
+        timerEl.textContent = formatTime(remainingSeconds);
+        startTimer();
+        startAutosave();
+      }
+    })();
+
+    // Before unload save
+    window.addEventListener('beforeunload', ()=>{
+      if(submitted) return;
+      const answers = collectAnswers();
+      saveProgress({ submitted: false, remainingSeconds, answers });
+    });
+
+  })();
+  </script>
+</body>
+</html>

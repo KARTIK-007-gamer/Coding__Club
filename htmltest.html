@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Basic Web & MS Word Test — 30 Questions</title>
+  <style>
+    :root{--accent:#2563eb;--danger:#dc2626;--bg:#f8fafc;--card:#ffffff}
+    *{box-sizing:border-box}
+    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0; background:var(--bg); color:#0f172a}
+    header{display:flex;align-items:center;justify-content:space-between;padding:1rem;gap:1rem}
+    .brand{display:flex;align-items:center;gap:.6rem}
+    .brand h1{font-size:1.05rem;margin:0}
+    .timer{font-weight:700;padding:.5rem .75rem;border-radius:8px;background:rgba(37,99,235,0.08)}
+    .warning{background:rgba(220,38,38,0.08)}
+    main{max-width:980px;margin:0 auto;padding:1rem}
+    .controls{display:flex;gap:.5rem;align-items:center}
+    .progressbar{height:10px;background:#e6eefc;border-radius:999px;overflow:hidden;width:220px}
+    .progressbar > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent), #60a5fa)}
+    .question-card{background:var(--card);padding:1rem;border-radius:12px;box-shadow:0 6px 18px rgba(11,15,30,0.06);margin-bottom:1rem}
+    fieldset{border:0;padding:0;margin:0}
+    legend{font-weight:600;margin-bottom:.5rem}
+    .options{display:flex;flex-direction:column;gap:.5rem}
+    label.option{display:flex;align-items:center;gap:.6rem;padding:.5rem;border-radius:8px;border:1px solid transparent}
+    input[type=radio]{margin-right:.5rem}
+    label.option:hover{background:#f1f5f9}
+    .fixed-submit{position:fixed;right:16px;bottom:16px;display:flex;gap:.5rem;align-items:center}
+    button{background:var(--accent);color:white;border:0;padding:.6rem .9rem;border-radius:10px;font-weight:700;cursor:pointer}
+    button.secondary{background:transparent;color:var(--accent);border:2px solid rgba(37,99,235,0.12)}
+    .results{padding:1rem;background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(11,15,30,0.06)}
+    .small{font-size:.9rem;color:#475569}
+    .muted{color:#6b7280}
+    .correct{color:green;font-weight:700}
+    .incorrect{color:var(--danger);font-weight:700}
+    @media (max-width:640px){.controls{flex-direction:column;align-items:flex-start}.progressbar{width:100%}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden><rect width="24" height="24" rx="6" fill="#eef2ff"/><path d="M7 14.5L11 9l4 5.5" stroke="#3730a3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div>
+        <h1>Basic Web & MS Word Test</h1>
+        <div class="muted small">30 Qs — 30 minutes — 1 mark each</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="progressbar" title="progress"><i id="progressFill"></i></div>
+      <div id="progressText" class="small">Question 0 of 30</div>
+      <div id="timer" class="timer" role="timer" aria-live="polite">30:00</div>
+    </div>
+  </header>
+
+  <main>
+    <form id="testForm" aria-label="Basic Web and Word Test">
+      <div id="questionsContainer"></div>
+    </form>
+
+    <div id="postArea"></div>
+  </main>
+
+  <div class="fixed-submit">
+    <button id="resetBtn" class="secondary">Reset Test</button>
+    <button id="submitBtn" title="Submit Test">Submit Test</button>
+  </div>
+
+  <script>
+  /*
+   Single-file test app (improved accessibility + reliable restore)
+   - fixes: option text is inserted using textContent, inputs have unique ids, labels use for=, saved answers store option text (not index) so restoring works correctly even after shuffles
+  */
+
+  const STORAGE_KEY = 'basic_test_v1';
+  const DURATION_SECONDS = 30 * 60; // 30 minutes
+
+  // Questions: id, topic, text, options[], correctIndex, explanation
+  const QUESTIONS = [
+    {id:1, topic:'HTML', text:'Which HTML tag is used to create a clickable link?', options:['<a>','<link>','<href>','<button>'], correctIndex:0, explanation:'The <a> tag creates hyperlinks using the href attribute.'},
+    {id:2, topic:'HTML', text:'Which attribute specifies the URL of an image in an <img> tag?', options:['src','href','alt','data'], correctIndex:0, explanation:'The src attribute holds the image URL.'},
+    {id:3, topic:'HTML', text:'Which HTML5 element is used for the main navigation links?', options:['<nav>','<header>','<menu>','<section>'], correctIndex:0, explanation:'<nav> represents a section with navigation links.'},
+    {id:4, topic:'HTML', text:'What does <!DOCTYPE html> do?', options:['Declares HTML5 document type','Links external stylesheet','Defines a comment','Sets character encoding'], correctIndex:0, explanation:'It tells the browser to use HTML5 parsing mode.'},
+    {id:5, topic:'HTML', text:'Which attribute provides alternative text for an image?', options:['alt','title','desc','label'], correctIndex:0, explanation:'alt supplies alternative text for accessibility or broken images.'},
+    {id:6, topic:'HTML', text:'How do you create an ordered (numbered) list?', options:['<ol>','<ul>','<dl>','<list>'], correctIndex:0, explanation:'<ol> creates ordered lists; <ul> creates unordered lists.'},
+    {id:7, topic:'HTML', text:'Which element is appropriate for a self-contained composition like a blog post?', options:['<article>','<aside>','<div>','<main>'], correctIndex:0, explanation:'<article> represents a self-contained piece of content.'},
+    {id:8, topic:'HTML', text:'Which attribute on a form control associates a label with its control?', options:['id (and label for=)','name','type','value'], correctIndex:0, explanation:'A label with for="id" links to the control with that id.'},
+    {id:9, topic:'HTML', text:'Which HTML element is used to define the largest heading?', options:['<h1>','<title>','<header>','<h6>'], correctIndex:0, explanation:'<h1> is the top-level heading element.'},
+    {id:10, topic:'HTML', text:'Which element is used to embed audio in HTML5?', options:['<audio>','<sound>','<media>','<mp3>'], correctIndex:0, explanation:'The <audio> element embeds sound content, often with controls.'},
+    {id:11, topic:'HTML', text:'Where does the metadata like <meta> and <title> belong?', options:['Inside the <head>','Inside the <body>','At the end of file','Before <!DOCTYPE>'], correctIndex:0, explanation:'Metadata belongs in the <head> section.'},
+    {id:12, topic:'HTML', text:'Which input type shows a color picker in modern browsers?', options:['color','text','range','date'], correctIndex:0, explanation:'input type="color" opens a color picker control.'},
+
+    {id:13, topic:'CSS', text:'How do you apply a style to elements with class "btn"?', options:['.btn { }','#btn { }','btn { }','*btn { }'], correctIndex:0, explanation:'In CSS classes are selected using a dot: .classname { }.'},
+    {id:14, topic:'CSS', text:'Which property changes the text color?', options:['color','font-color','text-color','foreground'], correctIndex:0, explanation:'The color property sets text (foreground) color.'},
+    {id:15, topic:'CSS', text:'Which CSS property controls spacing between lines of text?', options:['line-height','letter-spacing','word-spacing','text-spacing'], correctIndex:0, explanation:'line-height sets the distance between baselines of text lines.'},
+    {id:16, topic:'CSS', text:'What does display:flex do?', options:['Creates a flex container for layout','Makes text bold','Adds a border','Sets element to inline-block'], correctIndex:0, explanation:'display:flex makes the element a flex container for flexible layout.'},
+    {id:17, topic:'CSS', text:'Which unit is relative to the root font-size?', options:['rem','px','cm','in'], correctIndex:0, explanation:'rem is relative to the root (html) font-size; px is absolute.'},
+    {id:18, topic:'CSS', text:'How do you select an element with id "main"?', options:['#main { }','.main { }','main { }','*main { }'], correctIndex:0, explanation:'IDs are selected with #id in CSS.'},
+    {id:19, topic:'CSS', text:'Which shorthand property sets top, right, bottom, left padding?', options:['padding','margin','gap','space'], correctIndex:0, explanation:'padding: a b c d sets padding for the four sides.'},
+    {id:20, topic:'CSS', text:'Which property is used to change element transparency?', options:['opacity','visibility','display','filter'], correctIndex:0, explanation:'opacity sets how transparent an element is (0 to 1).'},
+    {id:21, topic:'CSS', text:'What does the :hover pseudo-class target?', options:['Element when mouse is over it','Element when focused by keyboard','Visited link','Active pressed state'], correctIndex:0, explanation:':hover applies styles when the pointing device is over the element.'},
+    {id:22, topic:'CSS', text:'Which rule places text in the center horizontally?', options:['text-align:center;','align:center;','justify:center;','place:center;'], correctIndex:0, explanation:'text-align:center centers inline content like text inside a block.'},
+
+    {id:23, topic:'MS Word', text:'Which key combination copies selected text in MS Word?', options:['Ctrl+C','Ctrl+V','Ctrl+X','Ctrl+P'], correctIndex:0, explanation:'Ctrl+C copies; Ctrl+V pastes; Ctrl+X cuts.'},
+    {id:24, topic:'MS Word', text:'Which feature automatically checks spelling as you type?', options:['Spell Check (auto-correct underline)','Track Changes','Comments','Mail Merge'], correctIndex:0, explanation:'Spell check marks possible spelling mistakes with red/green underlines.'},
+    {id:25, topic:'MS Word', text:'What is the default file extension for Word documents (modern versions)?', options:['.docx','.doc','.txt','.rtf'], correctIndex:0, explanation:'.docx is the default since Word 2007 (Open XML format).'},
+    {id:26, topic:'MS Word', text:'Which feature combines fields from a spreadsheet into letters?', options:['Mail Merge','Track Changes','Bookmarks','Footnotes'], correctIndex:0, explanation:'Mail Merge merges data sources into form letters, labels, etc.'},
+    {id:27, topic:'MS Word', text:'How do you insert a page break?', options:['Insert > Break or Ctrl+Enter','Ctrl+S','Alt+F4','Ctrl+B'], correctIndex:0, explanation:'Ctrl+Enter inserts a page break; there is also an Insert > Break menu.'},
+    {id:28, topic:'MS Word', text:'Which view shows how a document will look when printed?', options:['Print Layout view','Draft view','Outline view','Web Layout view'], correctIndex:0, explanation:'Print Layout displays pages as they will appear when printed.'},
+    {id:29, topic:'MS Word', text:'Which Word feature saves different versions and records edits?', options:['Track Changes','Insert Table','Headers','References'], correctIndex:0, explanation:'Track Changes records edits and allows accepting/rejecting changes.'},
+    {id:30, topic:'MS Word', text:'Which element shows footnotes at the bottom of the page?', options:['Footnote','Endnote','Header','Comment'], correctIndex:0, explanation:'Footnotes appear at the bottom of the page where they are inserted.'}
+  ];
+
+  // ----- Utility: shuffle an array (Fisher-Yates) -----
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  const container = document.getElementById('questionsContainer');
+  const progressText = document.getElementById('progressText');
+  const progressFill = document.getElementById('progressFill');
+  const timerEl = document.getElementById('timer');
+  const submitBtn = document.getElementById('submitBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const postArea = document.getElementById('postArea');
+  let shuffledOptionsMap = {}; // questionId -> shuffled options array of {text,isCorrect}
+
+  // Create options: now each input has a unique id and labels use for= for better accessibility
+  function createOptionElements(q){
+    const questionDef = QUESTIONS.find(x=>x.id===q.id);
+    const baseOptions = questionDef.options.map((t,idx)=>({text:t,isCorrect: idx === questionDef.correctIndex}));
+    const shuffled = shuffle(baseOptions);
+    shuffledOptionsMap[q.id] = shuffled;
+
+    const optDiv = document.createElement('div');
+    optDiv.className = 'options';
+
+    shuffled.forEach((opt,i)=>{
+      const inputId = `q${q.id}_opt${i}`;
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'q_'+q.id;
+      input.id = inputId;
+      input.value = opt.text; // store text as value for robust restore
+      input.setAttribute('aria-label', opt.text);
+
+      const label = document.createElement('label');
+      label.className = 'option';
+      label.htmlFor = inputId;
+      label.tabIndex = 0;
+
+      // Use textContent to avoid accidental HTML parsing of < and > inside option text
+      const span = document.createElement('span');
+      span.textContent = opt.text;
+
+      label.appendChild(input);
+      label.appendChild(span);
+      optDiv.appendChild(label);
+    });
+    return optDiv;
+  }
+
+  function renderAll(){
+    container.innerHTML = '';
+    QUESTIONS.forEach((q, idx)=>{
+      const card = document.createElement('section');
+      card.className = 'question-card';
+      card.id = 'card_'+q.id;
+
+      const field = document.createElement('fieldset');
+      const legend = document.createElement('legend');
+      // Use textContent to render characters like < and > safely
+      legend.textContent = `${idx+1}. (${q.topic}) ${q.text}`;
+      field.appendChild(legend);
+
+      const opts = createOptionElements(q);
+      field.appendChild(opts);
+      card.appendChild(field);
+      container.appendChild(card);
+    });
+    updateProgress();
+  }
+
+  // Count answered
+  function updateProgress(){
+    const total = QUESTIONS.length;
+    let answered = 0;
+    QUESTIONS.forEach(q=>{
+      const sel = document.querySelector('input[name="q_'+q.id+'"]:checked');
+      if(sel) answered++;
+    });
+    progressText.textContent = `Answered ${answered} of ${total}`;
+    const pct = Math.round((answered/total)*100);
+    progressFill.style.width = pct + '%';
+  }
+
+  // Collect answers as option text (robust to shuffles)
+  function collectAnswers(){
+    const answers = {};
+    QUESTIONS.forEach(q=>{
+      const sel = document.querySelector('input[name="q_'+q.id+'"]:checked');
+      if(sel) answers[q.id] = sel.value; // value is the option text
+    });
+    return answers;
+  }
+
+  // Calculate score from answers map where values are option text
+  function calculateScore(userAnswers){
+    let score = 0;
+    const perQ = [];
+    QUESTIONS.forEach(q=>{
+      const shuffled = shuffledOptionsMap[q.id] || [];
+      const selectedText = userAnswers[q.id] !== undefined ? userAnswers[q.id] : null;
+      const selectedOpt = selectedText ? shuffled.find(o=>o.text === selectedText) : null;
+      const correctOpt = shuffled.find(o=>o.isCorrect);
+      const isCorrect = selectedOpt ? selectedOpt.isCorrect : false;
+      if(isCorrect) score++;
+      perQ.push({id:q.id, question:q.text, topic:q.topic, selected: selectedOpt?selectedOpt.text:null, correct: correctOpt?correctOpt.text:null, explanation:q.explanation, isCorrect});
+    });
+    return {score, perQ};
+  }
+
+  function disableInputs(){
+    document.querySelectorAll('input[type="radio"]').forEach(i=>i.disabled=true);
+  }
+
+  function showResults(result){
+    postArea.innerHTML = '';
+    const box = document.createElement('div');
+    box.className = 'results';
+    const scorePct = Math.round((result.score / QUESTIONS.length) * 100);
+    box.innerHTML = `<h2>Your score: ${result.score} / ${QUESTIONS.length} — ${scorePct}%</h2><div class="small muted">Time: ${formatTime(remainingSeconds)} remaining when submitted</div><hr>`;
+
+    result.perQ.forEach((q,i)=>{
+      const qdiv = document.createElement('div');
+      qdiv.style.marginBottom = '0.8rem';
+      qdiv.innerHTML = `<strong>${i+1}. (${escapeHtml(q.topic)})</strong> <div class="small">${escapeHtml(q.question)}</div>
+        <div class="small">Your answer: <span class="${q.isCorrect? 'correct':'incorrect'}">${escapeHtml(q.selected || '— (no answer)')}</span></div>
+        <div class="small">Correct answer: <span class="correct">${escapeHtml(q.correct || '—')}</span></div>
+        <div class="small muted">Explanation: ${escapeHtml(q.explanation)}</div>`;
+      box.appendChild(qdiv);
+    });
+
+    postArea.appendChild(box);
+  }
+
+  // Escape helper for safe innerHTML in result rendering
+  function escapeHtml(str){
+    if(!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // Persistence
+  function saveProgress(state){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+  function loadProgress(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return null;
+    try{ return JSON.parse(raw);}catch(e){return null}
+  }
+
+  // Restore: now matching stored option text to current rendered radios
+  function restoreIfAny(){
+    const state = loadProgress();
+    if(!state) return false;
+    renderAll();
+
+    if(state.answers){
+      Object.keys(state.answers).forEach(qidStr=>{
+        const qid = parseInt(qidStr,10);
+        const selectedText = state.answers[qid];
+        if(!selectedText) return;
+        // find radio with value === selectedText
+        const input = Array.from(document.querySelectorAll('input[name="q_'+qid+'"]')).find(el=>el.value === selectedText);
+        if(input) input.checked = true;
+      });
+    }
+
+    if(state.submitted){
+      remainingSeconds = state.remainingSeconds || 0;
+      submitted = true;
+      const answers = state.answers || {};
+      const result = calculateScore(answers);
+      disableInputs();
+      showResults(result);
+      return true;
+    } else {
+      // not submitted
+      if(state.remainingSeconds) remainingSeconds = state.remainingSeconds;
+      return false;
+    }
+  }
+
+  // Timer + autosave
+  let timerInterval = null;
+  let autosaveInterval = null;
+  let remainingSeconds = DURATION_SECONDS;
+  let submitted = false;
+
+  function formatTime(s){
+    const mm = String(Math.floor(s/60)).padStart(2,'0');
+    const ss = String(s%60).padStart(2,'0');
+    return `${mm}:${ss}`;
+  }
+
+  function startTimer(){
+    clearInterval(timerInterval);
+    timerInterval = setInterval(()=>{
+      if(submitted) return clearInterval(timerInterval);
+      remainingSeconds--;
+      timerEl.textContent = formatTime(remainingSeconds);
+      if(remainingSeconds <= 120) timerEl.classList.add('warning');
+      if(remainingSeconds <= 0){
+        timerEl.textContent = '00:00';
+        autoSubmitOnExpire();
+      }
+    },1000);
+  }
+
+  function autoSubmitOnExpire(){
+    if(submitted) return;
+    submitted = true;
+    const answers = collectAnswers();
+    const result = calculateScore(answers);
+    disableInputs();
+    showResults(result);
+    saveProgress({submitted:true, remainingSeconds:0, answers});
+    clearInterval(timerInterval);
+    clearInterval(autosaveInterval);
+    alert('Time is up! Your test has been submitted.');
+  }
+
+  function startAutosave(){
+    autosaveInterval = setInterval(()=>{
+      if(submitted) return;
+      const answers = collectAnswers();
+      saveProgress({submitted:false, remainingSeconds, answers});
+      console.log('Saved progress', Object.keys(answers).length, 'answers,', 'time', remainingSeconds);
+    },10000);
+  }
+
+  // Submit
+  submitBtn.addEventListener('click', ()=>{
+    if(submitted) return;
+    if(!confirm('Are you sure you want to submit?')) return;
+    submitted = true;
+    const answers = collectAnswers();
+    const result = calculateScore(answers);
+    disableInputs();
+    showResults(result);
+    saveProgress({submitted:true, remainingSeconds, answers});
+    clearInterval(timerInterval);
+    clearInterval(autosaveInterval);
+  });
+
+  resetBtn.addEventListener('click', ()=>{
+    if(!confirm('Reset will clear saved progress and allow a fresh attempt. Proceed?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  });
+
+  document.addEventListener('change', (e)=>{
+    if(e.target && e.target.name && e.target.name.startsWith('q_')){
+      updateProgress();
+    }
+  });
+
+  (function boot(){
+    const hadSubmitted = restoreIfAny();
+    if(!hadSubmitted){
+      if(container.children.length===0) renderAll();
+      timerEl.textContent = formatTime(remainingSeconds);
+      startTimer();
+      startAutosave();
+    }
+  })();
+
+  // Keyboard activation for label elements
+  document.addEventListener('keydown', (e)=>{
+    if(document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('option')){
+      if(e.key==='Enter' || e.key===' '){
+        const input = document.getElementById(document.activeElement.htmlFor);
+        if(input && !input.disabled){ input.checked = true; updateProgress(); }
+        e.preventDefault();
+      }
+    }
+  });
+
+  window.addEventListener('beforeunload', ()=>{
+    if(submitted) return;
+    const answers = collectAnswers();
+    saveProgress({submitted:false, remainingSeconds, answers});
+  });
+
+  </script>
+</body>
+</html>
