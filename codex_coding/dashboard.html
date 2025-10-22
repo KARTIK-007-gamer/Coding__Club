@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Coding Club</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul id="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="lectures.html">Online Lectures</a></li>
+                <li><a href="notes.html">Notes</a></li>
+                <li><a href="tasks.html">Daily Tasks</a></li>
+                <li><a href="tests.html">Weekly Tests</a></li>
+                <li><a href="dashboard.html" class="active">Student Dashboard</a></li>
+                <li><button onclick="signOut()" class="sign-out-btn">Sign Out</button></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <style>
+        .sign-out-btn {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .sign-out-btn:hover {
+            background: white;
+            color: #2d3e50;
+        }
+    </style>
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-section {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: #1abc9c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+        }
+
+        .points-badge {
+            background: #f1c40f;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .course-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #1abc9c;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .button {
+            background: #1abc9c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .button:hover {
+            background: #16a085;
+        }
+
+        @media (max-width: 768px) {
+            .profile-section {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .profile-avatar {
+                margin: 0 auto;
+            }
+        }
+        footer {
+            background: #2d3e50;
+            color: #fff;
+            text-align: center;
+            padding: 1em 0;
+            margin-top: 2em;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            z-index: 100;
+        }
+        
+        .dashboard {
+            padding: 2rem;
+        }
+
+        .dashboard h1 {
+            margin-bottom: 2rem;
+            color: #2d3e50;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .progress-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#1abc9c 270deg, #ecf0f1 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem auto;
+            position: relative;
+        }
+
+        .progress-circle::before {
+            content: '';
+            width: 90px;
+            height: 90px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .progress-circle span {
+            position: relative;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2d3e50;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+
+        .progress {
+            height: 100%;
+            background: #1abc9c;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+        }
+
+        .profile-sidebar {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 60px;
+            margin: 0 auto 1rem;
+            background: #1abc9c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .profile-email {
+            color: #7f8c8d;
+            margin: 0.5rem 0;
+        }
+
+        .points-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .points-value {
+            font-size: 2.5rem;
+            color: #1abc9c;
+            font-weight: bold;
+        }
+
+        .points-label {
+            color: #7f8c8d;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .dashboard-main {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            color: #2c3e50;
+            margin: 0 0 1.5rem 0;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .detail-item h3 {
+            color: #7f8c8d;
+            margin: 0 0 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-item p {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .course-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-title {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin: 0 0 1rem 0;
+        }
+
+        .course-info {
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #1abc9c;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .button {
+            background: #1abc9c;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            width: 100%;
+        }
+
+        .button:hover {
+            background: #16a085;
+        }
+
+        .points-history {
+            margin-top: 1.5rem;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .history-points {
+            color: #1abc9c;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .content-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .content-section h2 {
+            color: #2d3e50;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .task-item, .test-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-status {
+            font-weight: 500;
+        }
+
+        .completed .task-status {
+            color: #1abc9c;
+        }
+
+        .in-progress .task-status {
+            color: #f1c40f;
+        }
+
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .test-score {
+            font-weight: bold;
+            color: #1abc9c;
+        }
+
+        .test-details {
+            background: #fff;
+            padding: 0.5rem;
+            border-radius: 5px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.25rem 0;
+            color: #7f8c8d;
+        }
+
+        .stats-detail {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        /* Test Page Styles */
+        .next-test-banner {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            box-shadow: 0 4px 15px rgba(26, 188, 156, 0.2);
+        }
+
+        .countdown-container {
+            text-align: center;
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.1);
+        }
+
+        .countdown-container h3 {
+            color: #1565c0;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .modern-countdown.horizontal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.15);
+        }
+
+        .countdown-divider {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 0 0.5rem;
+            padding-top: 1rem;
+        }
+
+        .countdown-divider .dot {
+            width: 6px;
+            height: 6px;
+            background: #2196f3;
+            border-radius: 50%;
+            animation: pulseOpacity 1s infinite;
+        }
+
+        @keyframes pulseOpacity {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .countdown-divider .dot:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .countdown-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            min-width: 140px;
+        }
+
+        .time-box {
+            background: #2196f3;
+            padding: 1.5rem;
+            border-radius: 12px;
+            width: 100%;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.2);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .time-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.15) 0%,
+                rgba(255, 255, 255, 0) 100%);
+        }
+
+        .time-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(33, 150, 243, 0.3);
+        }
+
+        .time-box::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .time-box span {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .countdown-unit label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1565c0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .countdown-unit label::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: #2196f3;
+            border-radius: 2px;
+        }
+
+        /* Animation for seconds */
+        .countdown-unit:last-child .time-box {
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 8px 20px rgba(33, 150, 243, 0.2);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 12px 25px rgba(33, 150, 243, 0.3);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .countdown-container {
+                padding: 1.5rem;
+            }
+
+            .modern-countdown.horizontal {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .countdown-unit {
+                min-width: 120px;
+            }
+
+            .time-box {
+                height: 80px;
+                padding: 1rem;
+            }
+
+            .time-box span {
+                font-size: 2.5rem;
+            }
+
+            .countdown-divider {
+                display: none;
+            }
+        }
+
+        /* Add a pulsing animation to the seconds */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        #seconds {
+            animation: pulse 1s infinite;
+        }
+
+        .clock-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        .clock-hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .clock-hand.hours {
+            width: 4px;
+            height: 60px;
+            margin-left: -2px;
+        }
+
+        .clock-hand.minutes {
+            width: 3px;
+            height: 80px;
+            margin-left: -1.5px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .clock-hand.seconds {
+            width: 2px;
+            height: 90px;
+            margin-left: -1px;
+            background: #1abc9c;
+        }
+
+        .clock-numbers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .clock-numbers .number {
+            position: absolute;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .clock-numbers .n12 { top: 10px; left: 50%; transform: translateX(-50%); }
+        .clock-numbers .n3 { right: 10px; top: 50%; transform: translateY(-50%); }
+        .clock-numbers .n6 { bottom: 10px; left: 50%; transform: translateX(-50%); }
+        .clock-numbers .n9 { left: 10px; top: 50%; transform: translateY(-50%); }
+
+        .digital-time {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .digital-time span {
+            display: inline-block;
+            margin: 0 0.2rem;
+            min-width: 2.5ch;
+            text-align: center;
+        }
+
+        .test-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            background: none;
+            color: #7f8c8d;
+            font-size: 1rem;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #1abc9c;
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #2d3e50;
+        }
+
+        .tab-btn.active::after {
+            transform: scaleX(1);
+        }
+
+        .test-content {
+            display: none;
+        }
+
+        .test-content.active {
+            display: block;
+        }
+
+        .test-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .test-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #eee;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .next-test-info {
+            padding-left: 1rem;
+            border-left: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .next-test-info h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.5rem;
+        }
+
+        .next-test-info p {
+            margin: 0.5rem 0;
+            opacity: 0.9;
+        }
+
+        .test-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .test-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .test-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .test-card .test-date {
+            color: #1abc9c;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .test-card .test-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #2d3e50;
+        }
+
+        .test-card .test-topics {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .test-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        .status-upcoming {
+            background: #e8f7f4;
+            color: #1abc9c;
+        }
+
+        .status-completed {
+            background: #f0f4f8;
+            color: #7f8c8d;
+        }
+
+        .leaderboard-filters {
+            margin-bottom: 1rem;
+        }
+
+        .leaderboard-filters select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        #leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        #leaderboard-table th,
+        #leaderboard-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        #leaderboard-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2d3e50;
+        }
+
+        #leaderboard-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .performance-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .performance-excellent {
+            background: #1abc9c;
+        }
+
+        .performance-good {
+            background: #3498db;
+        }
+
+        .performance-average {
+            background: #f1c40f;
+        }
+    </style>
+    <div class="container">
+        <!-- Profile Card -->
+        <div class="card">
+            <div class="profile-section">
+                <div class="profile-avatar" id="profile-avatar"></div>
+                <div>
+                    <h2 id="user-name">Loading...</h2>
+                    <p id="user-email">Loading...</p>
+                    <p>Points: <span class="points-badge" id="user-points">0</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Details Card -->
+        <div class="card">
+            <h3>Your Details</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div>
+                    <strong>College:</strong>
+                    <p id="user-college">Loading...</p>
+                </div>
+                <div>
+                    <strong>Year:</strong>
+                    <p id="user-year">Loading...</p>
+                </div>
+                <div>
+                    <strong>Member Since:</strong>
+                    <p id="user-joined">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses Card -->
+        <div class="card">
+            <h3>Your Courses</h3>
+            <div class="courses-grid" id="courses-container">
+                <!-- Courses will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Activity tracking system
+        const ACTIVITY_TYPES = {
+            COURSE_PROGRESS: 'course_progress',
+            TASK_COMPLETION: 'task_completion',
+            TEST_COMPLETION: 'test_completion'
+        };
+
+        const POINTS_REWARDS = {
+            TASK_COMPLETION: 10,
+            TEST_COMPLETION: 20,
+            COURSE_LESSON: 15
+        };
+
+        // Initialize dashboard
+        function initDashboard() {
+            // Check if user is logged in
+            const userDetails = JSON.parse(localStorage.getItem('clubUserDetails'));
+            if (!userDetails) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Set user details
+            document.getElementById('user-name').textContent = userDetails.fullName;
+            document.getElementById('user-email').textContent = userDetails.email;
+            document.getElementById('user-college').textContent = userDetails.college;
+            document.getElementById('user-year').textContent = `${userDetails.year}${getYearSuffix(userDetails.year)} Year`;
+
+            // Set joined date
+            const joinedDate = new Date(userDetails.joinedDate);
+            document.getElementById('user-joined').textContent = joinedDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            // Set avatar initials
+            const initials = userDetails.fullName
+                .split(' ')
+                .map(name => name[0])
+                .join('')
+                .toUpperCase();
+            document.getElementById('profile-avatar').textContent = initials;
+
+            // Get user's activities and progress
+            const activities = getUserActivities(userDetails.username);
+            const points = calculateTotalPoints(activities);
+            document.getElementById('user-points').textContent = points;
+
+            // Update courses based on actual progress
+            updateCourseProgress(userDetails.username, activities);
+
+            // Get and display recent activities
+            displayRecentActivities(activities);
+        }
+
+        // Get user's activities from various sources
+        function getUserActivities(username) {
+            const activities = [];
+            
+            // Get completed tasks
+            const submittedTasks = JSON.parse(localStorage.getItem('submittedTasks')) || {};
+            const userTasks = submittedTasks[username] || [];
+            userTasks.forEach(task => {
+                activities.push({
+                    type: ACTIVITY_TYPES.TASK_COMPLETION,
+                    date: task.date,
+                    details: task.taskName,
+                    points: POINTS_REWARDS.TASK_COMPLETION
+                });
+            });
+
+            // Get test scores
+
+            return activities;
+        }
+
+        // Sign out function
+        function signOut() {
+            // Check if user was signed in with Google
+            const userDetails = JSON.parse(localStorage.getItem('clubUserDetails'));
+            if (userDetails && userDetails.googleId) {
+                // Sign out from Google
+                google.accounts.id.disableAutoSelect();
+            }
+            
+            // Clear local storage
+            localStorage.removeItem('clubUserDetails');
+            
+            // Redirect to login page
+            window.location.href = 'login.html';
+        }
+            const testScores = JSON.parse(localStorage.getItem('testScores')) || {};
+            const userTests = testScores[username] || [];
+            userTests.forEach(test => {
+                activities.push({
+                    type: ACTIVITY_TYPES.TEST_COMPLETION,
+                    date: test.date,
+                    details: `Score: ${test.score}%`,
+                    points: POINTS_REWARDS.TEST_COMPLETION
+                });
+            });
+
+            // Get course progress
+            const courseProgress = JSON.parse(localStorage.getItem('courseProgress')) || {};
+            const userCourses = courseProgress[username] || {};
+            Object.entries(userCourses).forEach(([courseId, progress]) => {
+                activities.push({
+                    type: ACTIVITY_TYPES.COURSE_PROGRESS,
+                    date: progress.lastAccessed,
+                    details: `${progress.courseName}: ${progress.completedLessons} lessons`,
+                    points: POINTS_REWARDS.COURSE_LESSON * progress.completedLessons
+                });
+            });
+
+            // Sort by date, most recent first
+            return activities.sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+
+        // Calculate total points from activities
+        function calculateTotalPoints(activities) {
+            return activities.reduce((total, activity) => total + activity.points, 0);
+        }
+
+        // Update course progress display
+        function updateCourseProgress(username, activities) {
+            const coursesContainer = document.getElementById('courses-container');
+            const courseProgress = JSON.parse(localStorage.getItem('courseProgress')) || {};
+            const userCourses = courseProgress[username] || {};
+
+            coursesContainer.innerHTML = Object.entries(userCourses)
+                .map(([courseId, progress]) => {
+                    const percentComplete = Math.round((progress.completedLessons / progress.totalLessons) * 100);
+                    return `
+                        <div class="course-card">
+                            <h4>${progress.courseName}</h4>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${percentComplete}%"></div>
+                            </div>
+                            <p>${progress.completedLessons} of ${progress.totalLessons} lessons completed</p>
+                            <button class="button" onclick="continueCourse('${courseId}')">Continue Learning</button>
+                        </div>
+                    `;
+                })
+                .join('');
+        }
+
+        // Display recent activities
+        function displayRecentActivities(activities) {
+            const recentActivities = activities.slice(0, 5); // Show last 5 activities
+            const container = document.createElement('div');
+            container.className = 'card';
+            container.innerHTML = `
+                <h3>Recent Activities</h3>
+                ${recentActivities.map(activity => `
+                    <div class="activity-item">
+                        <p>${activity.details}</p>
+                        <small>${new Date(activity.date).toLocaleDateString()}</small>
+                        <span class="points-badge">+${activity.points} points</span>
+                    </div>
+                `).join('')}
+            `;
+            document.querySelector('.container').appendChild(container);
+        }
+
+        // Helper function for year suffix
+        function getYearSuffix(year) {
+            const suffixes = ['st', 'nd', 'rd', 'th'];
+            return suffixes[parseInt(year) - 1] || 'th';
+        }
+
+        // Function to track course progress
+        function continueCourse(courseId) {
+            const userDetails = JSON.parse(localStorage.getItem('clubUserDetails'));
+            const courseProgress = JSON.parse(localStorage.getItem('courseProgress')) || {};
+            const userCourses = courseProgress[userDetails.username] || {};
+            
+            if (userCourses[courseId]) {
+                userCourses[courseId].completedLessons++;
+                userCourses[courseId].lastAccessed = new Date().toISOString();
+                
+                courseProgress[userDetails.username] = userCourses;
+                localStorage.setItem('courseProgress', JSON.stringify(courseProgress));
+                
+                initDashboard(); // Refresh dashboard
+            }
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+        </div>
+        <p>&copy; 2025 Coding Club. All rights reserved.</p>
+    </footer>
+   
+</body>
+</html>

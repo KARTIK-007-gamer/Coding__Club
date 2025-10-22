@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Tasks - Coding Club</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul id="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="lectures.html">Online Lectures</a></li>
+                <li><a href="notes.html">Notes</a></li>
+                <li><a href="tasks.html" class="active">Daily Tasks</a></li>
+                <li><a href="tests.html">Weekly Tests</a></li>
+                 <!-- <li><a href="dashboard.html">Student Dashboard</a></li> -->
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="tasks">
+            <h1>Daily Tasks</h1>
+            <div id="provided-tasks">
+                <!-- Provided tasks will be listed here by JS -->
+            </div>
+            <div id="task-success" style="display:none;">Task submitted successfully!</div>
+            <!-- <div class="bonus-points">
+                <h2>Bonus Points System</h2>
+                <ul>
+                    <li>Submit before 12 PM: <strong>+5 points</strong></li>
+                    <li>Submit before 6 PM: <strong>+2 points</strong></li>
+                    <li>Submit after 6 PM: <strong>+0 points</strong></li>
+                </ul>
+            </div> -->
+            <div class="progress-tracker">
+                <h2>Progress Tracker</h2>
+                <table id="progress-table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Task Title</th>
+                            <th>Status</th>
+                            <th>Bonus Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Progress will be populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+        </div>
+        <p>&copy; 2025 Coding Club. All rights reserved.</p>
+    </footer>
+    <script src="assets/script.js"></script>
+</body>
+</html>

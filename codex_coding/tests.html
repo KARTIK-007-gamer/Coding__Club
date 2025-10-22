@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Tests - Coding Club</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul id="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="lectures.html">Online Lectures</a></li>
+                <li><a href="notes.html">Notes</a></li>
+                <li><a href="tasks.html">Daily Tasks</a></li>
+                <li><a href="tests.html" class="active">Weekly Tests</a></li>
+                <!-- <li><a href="dashboard.html">Student Dashboard</a></li> -->
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="tests">
+            <item align="center"><h1>TESTS</h1></item>
+            <div class="test-list">
+                <div class="test-item">
+                    <div class="test-info">
+                        <h3>Web Development & MS Word Test</h3>
+                        <ul class="test-details">
+                            <li><i class="far fa-clock"></i> Duration: 30 minutes</li>
+                            <li><i class="far fa-file-alt"></i> Questions: 30 MCQs</li>
+                            <li><i class="far fa-list-alt"></i> Topics: HTML (12), CSS (10), MS Word (8)</li>
+                        </ul>
+                    </div>
+                    <div class="test-actions">
+                        <a href="test/htmltest.html" class="test-btn">Start Test</a>
+                    </div>
+                </div>
+
+                <div class="test-item">
+                    <div class="test-info">
+                        <h3>C Programming Test</h3>
+                        <ul class="test-details">
+                            <li><i class="far fa-clock"></i> Duration: 30 minutes</li>
+                            <li><i class="far fa-file-alt"></i> Questions: 30 MCQs</li>
+                            <li><i class="far fa-list-alt"></i> Topics: Basic C, Functions, Arrays</li>
+                        </ul>
+                    </div>
+                    <div class="test-actions">
+                        <a href="test/ctest.html" class="test-btn">Start Test</a>
+                    </div>
+                </div>
+
+                <div class="test-item">
+                    <div class="test-info">
+                        <h3>C++ Programming Test</h3>
+                        <ul class="test-details">
+                            <li><i class="far fa-clock"></i> Duration: 30 minutes</li>
+                            <li><i class="far fa-file-alt"></i> Questions: 30 MCQs</li>
+                            <li><i class="far fa-list-alt"></i> Topics: OOP, Basic</li>
+                        </ul>
+                    </div>
+                    <div class="test-actions">
+                        <a href="test/cpptest.html" class="test-btn">Start Test</a>
+                    </div>
+                </div>
+            </div>
+            
+        </section>
+    </main>
+    <style>
+        .test-list {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .test-item {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .test-info h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .test-details {
+            list-style: none;
+            padding: 0;
+        }
+
+        .test-details li {
+            color: #666;
+            margin: 0.5rem 0;
+        }
+
+        .test-btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #2196f3;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .test-btn:hover {
+            background: #1976d2;
+        }
+
+        @media (max-width: 600px) {
+            .test-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .test-actions {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+    <footer>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+        </div>
+        <p>&copy; 2025 Coding Club. All rights reserved.</p>
+    </footer>
+    <script src="assets/script.js"></script>
+</body>
+</html>
