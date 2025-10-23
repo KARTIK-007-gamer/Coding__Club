@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Previous Year Question Papers - Coding Club</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <style>
+    /* body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f9fbfc;
+      margin: 0;
+      padding: 0;
+    }
+
+    header nav {
+      background: #16a085;
+      padding: 1em;
+    }
+
+    #nav-menu {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      gap: 2em;
+      margin: 0;
+      padding: 0;
+    }
+
+    #nav-menu li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    #nav-menu li a.active {
+      text-decoration: underline;
+    } */
+
+    /* ===== Main Section ===== */
+    .papers {
+      text-align: center;
+      padding: 2em 1em;
+    }
+
+    .papers h1 {
+      color: #2d3e50;
+      font-size: 2em;
+      margin-bottom: 0.5em;
+    }
+
+    .papers p {
+      color: #7f8c8d;
+      font-size: 1em;
+      margin-bottom: 2em;
+    }
+
+    /* ===== Semester Section ===== */
+    .semester {
+      margin-bottom: 3em;
+    }
+
+    .semester h2 {
+      font-size: 1.6em;
+      color: #16a085;
+      margin-bottom: 1em;
+      border-bottom: 2px solid #1abc9c;
+      display: inline-block;
+      padding-bottom: 0.3em;
+    }
+
+    /* ===== Subject Section ===== */
+    .subject-block {
+      margin-bottom: 2em;
+    }
+
+    .subject-block h3 {
+      color: #2d3e50;
+      margin-bottom: 1em;
+      font-size: 1.2em;
+    }
+
+    /* ===== Paper Cards ===== */
+    .papers-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1em;
+    }
+
+    .paper-item {
+      background: #f0f4f8;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(44, 62, 80, 0.08);
+      padding: 1em;
+      width: 180px;
+      text-align: center;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .paper-item:hover {
+      box-shadow: 0 4px 16px rgba(44, 62, 80, 0.18);
+      transform: translateY(-5px);
+    }
+
+    .paper-item strong {
+      display: block;
+      margin-bottom: 0.4em;
+      font-size: 1em;
+      color: #2d3e50;
+    }
+
+    .paper-item a {
+      display: inline-block;
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 20px;
+      padding: 0.4em 1em;
+      background: linear-gradient(90deg, #1abc9c 0%, #16a085 100%);
+      transition: background 0.2s, transform 0.2s;
+      font-size: 0.9em;
+    }
+
+    .paper-item a:hover {
+      background: linear-gradient(90deg, #16a085 0%, #1abc9c 100%);
+      transform: scale(1.07);
+    }
+
+    @media (max-width: 700px) {
+      .paper-item {
+        width: 45%;
+      }
+    }
+
+    footer {
+      background: #2d3e50;
+      color: #fff;
+      text-align: center;
+      padding: 1em 0;
+    }
+
+    .footer-links {
+      margin-bottom: 0.5em;
+    }
+
+    .footer-links a {
+      color: #1abc9c;
+      margin: 0 0.5em;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul id="nav-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="lectures.html">Online Lectures</a></li>
+        <li><a href="notes.html">Notes</a></li>
+        <li><a href="tasks.html">Daily Tasks</a></li>
+        <li><a href="tests.html">Weekly Tests</a></li>
+        <li><a href="papers.html" class="active">Question Papers</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="papers">
+      <h1>Previous Year Question Papers</h1>
+      <p>Browse question papers semester-wise. Each subject includes multiple years for better practice.</p>
+
+      <div id="semester-container"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Facebook</a>
+      <a href="#">Twitter</a>
+      <a href="#">Instagram</a>
+    </div>
+    <p>&copy; 2025 Coding Club. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // ===== Semester → Subject → Multiple PDFs =====
+    const semesterData = {
+      "Semester 1": {
+        "Mathematics": [
+          { year: "2024", pdf: "paper/1st/maths/311302-2024-winter-question-paper.pdf" },
+          { year: "2024", pdf: "paper/1st/maths/311302-2024-summer-question-Paper{msbte study resources}.pdf" },
+          { year: "2023", pdf: "paper/1st/maths/311302-2023-winter-question-Paper{msbte study resources}.pdf" },
+          { year: "2025", pdf: "paper/1st/maths/311302-2025-Summer-question-paper.pdf" },
+        //   { year: "2020", pdf: "papers/sem1/maths-2020.pdf" }
+        ]
+        // "Basic Electrical Engineering": [
+        //   { year: "2024", pdf: "papers/sem1/bee-2024.pdf" },
+        //   { year: "2023", pdf: "papers/sem1/bee-2023.pdf" },
+        //   { year: "2022", pdf: "papers/sem1/bee-2022.pdf" },
+        //   { year: "2021", pdf: "papers/sem1/bee-2021.pdf" },
+        //   { year: "2020", pdf: "papers/sem1/bee-2020.pdf" }
+        // ]
+      },
+    //   "Semester 2": {
+    //     "C Programming": [
+    //       { year: "2024", pdf: "papers/sem2/c-2024.pdf" },
+    //       { year: "2023", pdf: "papers/sem2/c-2023.pdf" },
+    //       { year: "2022", pdf: "papers/sem2/c-2022.pdf" },
+    //       { year: "2021", pdf: "papers/sem2/c-2021.pdf" },
+    //       { year: "2020", pdf: "papers/sem2/c-2020.pdf" }
+    //     ],
+    //     "Physics": [
+    //       { year: "2024", pdf: "papers/sem2/physics-2024.pdf" },
+    //       { year: "2023", pdf: "papers/sem2/physics-2023.pdf" },
+    //       { year: "2022", pdf: "papers/sem2/physics-2022.pdf" },
+    //       { year: "2021", pdf: "papers/sem2/physics-2021.pdf" },
+    //       { year: "2020", pdf: "papers/sem2/physics-2020.pdf" }
+    //     ]
+    //   },
+      "Semester 3": {
+        "Data Structures": [
+          { year: "2024", pdf: "paper/3rd/data structure/313301-2024-winter-question-paper.pdf" },
+          { year: "2025", pdf: "paper/3rd/data structure/313301-2025-Summer-question-paper.pdf" },
+        //   { year: "2022", pdf: "papers/sem3/data-structures-2022.pdf" },
+        //   { year: "2021", pdf: "papers/sem3/data-structures-2021.pdf" },
+        //   { year: "2020", pdf: "papers/sem3/data-structures-2020.pdf" }
+        ],
+        "Database Management Systems": [
+          { year: "2024", pdf: "paper/3rd/dbms/313302-2024-winter-question-paper.pdf" },
+          { year: "2025", pdf: "paper/3rd/dbms/313302-2025-Summer-question-paper.pdf" },
+        //   { year: "2022", pdf: "papers/sem3/dbms-2022.pdf" },
+        //   { year: "2021", pdf: "papers/sem3/dbms-2021.pdf" },
+        //   { year: "2020", pdf: "papers/sem3/dbms-2020.pdf" }
+        ],
+        "Digital Technique": [
+          { year: "2024", pdf: "paper/3rd/dte/313303-2024-winter-question-paper.pdfpaper/3rd/dte/313303-2024-winter-question-paper.pdf" },
+          { year: "2025", pdf: "paper/3rd/dte/313303-2025-Summer-question-paper.pdf" },
+        //   { year: "2022", pdf: "papers/sem3/data-structures-2022.pdf" },
+        //   { year: "2021", pdf: "papers/sem3/data-structures-2021.pdf" },
+        //   { year: "2020", pdf: "papers/sem3/data-structures-2020.pdf" }
+        ],
+        "Object Oriented Programming": [
+          { year: "2024", pdf: "paper/3rd/oop/313304-2024-winter-question-paper.pdf" },
+          { year: "2025", pdf: "paper/3rd/oop/313304-2025-Summer-question-paper.pdf" },
+        //   { year: "2022", pdf: "papers/sem3/data-structures-2022.pdf" },
+        //   { year: "2021", pdf: "papers/sem3/data-structures-2021.pdf" },
+        //   { year: "2020", pdf: "papers/sem3/data-structures-2020.pdf" }
+        ]
+      },
+    //   "Semester 4": {
+    //     "Operating Systems": [
+    //       { year: "2024", pdf: "papers/sem4/os-2024.pdf" },
+    //       { year: "2023", pdf: "papers/sem4/os-2023.pdf" },
+    //       { year: "2022", pdf: "papers/sem4/os-2022.pdf" },
+    //       { year: "2021", pdf: "papers/sem4/os-2021.pdf" },
+    //       { year: "2020", pdf: "papers/sem4/os-2020.pdf" }
+    //     ],
+    //     "OOP in C++": [
+    //       { year: "2024", pdf: "papers/sem4/oop-2024.pdf" },
+    //       { year: "2023", pdf: "papers/sem4/oop-2023.pdf" },
+    //       { year: "2022", pdf: "papers/sem4/oop-2022.pdf" },
+    //       { year: "2021", pdf: "papers/sem4/oop-2021.pdf" },
+    //       { year: "2020", pdf: "papers/sem4/oop-2020.pdf" }
+    //     ]
+    //   },
+      "Semester 5": {
+        "Software Engineering": [
+          { year: "2019", pdf: "paper/5th/software engineering/22413-2019-Winter-question-paper[Msbte study resources].pdf" },
+          { year: "2022", pdf: "paper/5th/software engineering/22413-2022-Summer-question-paper[Msbte-study-resources].pdf" },
+          { year: "2023", pdf: "paper/5th/software engineering/22413-2023-Winter-question-paper[Msbte study resources].pdf" },
+          { year: "2024", pdf: "paper/5th/software engineering/22413-2024-winter-question-paper (1).pdf" },
+          { year: "2024", pdf: "paper/5th/software engineering/22413-2024-winter-question-paper.pdf" }
+        ],
+        "Operating System": [
+          { year: "2019", pdf: "paper/5th/os/22516-2019-Winter-question-paper[Msbte study resources].pdf" },
+          { year: "2023", pdf: "paper/5th/os/22516-2023-Summer-question-paper[Msbte study resources].pdf" },
+          { year: "2023", pdf: "paper/5th/os/22516-2023-Winter-question-paper[Msbte study resources].pdf" },
+          { year: "2022", pdf: "paper/5th/os/22516-2022-Summer-question-paper[Msbte-study-resources].pdf" },
+          { year: "2024", pdf: "paper/5th/os/22516-2024-winter-question-paper.pdf" },
+          { year: "2025", pdf: "paper/5th/os/22516-2025-Summer-question-paper.pdf" }
+        ],
+      "Cloud Computing": [
+        { year: "2023", pdf: "paper/5th/cloud/22624-2023-Summer-question-paper[Msbte study resources].pdf" },
+        { year: "2024", pdf: "paper/5th/cloud/22624-2024-winter-question-paper.pdf" },
+        { year: "2022", pdf: "paper/5th/cloud/22624(1)-2022-Summer-question-paper[Msbte-study-resources].pdf" },
+        { year: "2025", pdf: "paper/5th/cloud/22624-2025-Summer-question-paper.pdf" },
+        { year: "2020", pdf: "paper/5th/cloud/22624-2020-Winter-question-paper[Msbte study resources].pdf" }
+        ]
+      }
+    };
+
+    const container = document.getElementById("semester-container");
+
+    for (const [semester, subjects] of Object.entries(semesterData)) {
+      const semDiv = document.createElement("div");
+      semDiv.className = "semester";
+      semDiv.innerHTML = `<h2>${semester}</h2>`;
+
+      for (const [subject, papers] of Object.entries(subjects)) {
+        const subjDiv = document.createElement("div");
+        subjDiv.className = "subject-block";
+        subjDiv.innerHTML = `<h3>${subject}</h3><div class="papers-list"></div>`;
+
+        const listDiv = subjDiv.querySelector(".papers-list");
+        papers.forEach((paper) => {
+          const div = document.createElement("div");
+          div.className = "paper-item";
+          div.innerHTML = `
+            <strong>${paper.year}</strong>
+            <a href="${paper.pdf}" download>Download</a>
+          `;
+          listDiv.appendChild(div);
+        });
+
+        semDiv.appendChild(subjDiv);
+      }
+      container.appendChild(semDiv);
+    }
+  </script>
+</body>
+</html>

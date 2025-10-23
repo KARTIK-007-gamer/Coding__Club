@@ -656,6 +656,29 @@ document.addEventListener('DOMContentLoaded', function() {
             notesList.appendChild(div);
         });
     }
+    //----Papers Page---
+        // Question papers data
+        const papers = [
+            { subject: 'Software Engineering (2024)', pdf: 'assets/papers/software-engineering-2024.pdf' },
+            { subject: 'Data Structures (2023)', pdf: 'assets/papers/data-structures-2023.pdf' },
+            { subject: 'Database Management Systems (2023)', pdf: 'assets/papers/dbms-2023.pdf' },
+            { subject: 'Computer Networks (2022)', pdf: 'assets/papers/computer-networks-2022.pdf' },
+            { subject: 'Operating Systems (2022)', pdf: 'assets/papers/operating-systems-2022.pdf' }
+        ];
+
+        const papersList = document.getElementById('papers-list');
+
+        if (papersList) {
+            papers.forEach(paper => {
+                const div = document.createElement('div');
+                div.className = 'note-item';
+                div.innerHTML = `
+                    <strong>${paper.subject}</strong> - 
+                    <a href="${paper.pdf}" download>Download PDF</a>
+                `;
+                papersList.appendChild(div);
+            });
+        }
 
     // --- Daily Tasks Page ---
     const providedTasks = [
